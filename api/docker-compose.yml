@@ -1,0 +1,25 @@
+services:
+  api:
+    build: .
+    ports:
+      - '5000:5000'
+    environment:
+      DB_HOST: mysql
+      DB_USER: root
+      DB_PASSWORD: 123456
+      DB_NAME: zoologico
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_DATABASE: zoologico
+    ports:
+      - '3307:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+
+volumes:
+  db_data:
