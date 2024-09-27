@@ -1,25 +1,32 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import CapivaraList from './componentes/CapivaraList';
+import AddCapivara from './componentes/AddCapivara';
+import EditCapivara from './componentes/EditCapivara';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
-}
+const App = () => {
+    const [selectedCapivara, setSelectedCapivara] = useState(null);
+    const [refresh, setRefresh] = useState(false);
+
+    const handleEdit = (capivara) => {
+        setSelectedCapivara(capivara);
+    };
+
+    const handleUpdate = () => {
+        setSelectedCapivara(null);
+        setRefresh(!refresh);
+    };
+
+    return (
+        <div>
+            <h1>Gerenciamento de Capivaras</h1>
+            {selectedCapivara ? (
+                <EditCapivara capivara={selectedCapivara} onUpdate={handleUpdate} onCancel={() => setSelectedCapivara(null)} />
+            ) : (
+                <AddCapivara onAdd={handleUpdate} />
+            )}
+            <CapivaraList onEdit={handleEdit} refresh={refresh} />
+        </div>
+    );
+};
 
 export default App;
