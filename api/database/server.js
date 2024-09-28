@@ -1,13 +1,28 @@
-// server.js
 const express = require('express');
 const mysql = require('mysql2');
 const cors = require('cors');
 require('dotenv').config();
 
 const app = express();
-app.use(cors());
+
+// Middleware para permitir CORS
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Middleware para logar as requisições recebidas
+app.use((req, res, next) => {
+    console.log(`Requisição recebida: ${req.method} ${req.url}`);
+    console.log('Corpo da requisição:', req.body);
+    next();
+});
+
+// Middleware para permitir que o backend lide com JSON
 app.use(express.json());
 
+// Conectar ao MySQL
 const db = mysql.createConnection({
     host: process.env.DB_HOST,
     user: process.env.DB_USER,
@@ -23,14 +38,13 @@ db.connect((err) => {
     console.log('Conectado ao MySQL');
 });
 
-// Endpoint para listar capivaras
-app.get('/capivaras', (req, res) => {
-    db.query('SELECT * FROM capivaras', (err, results) => {
-        if (err) throw err;
-        res.json(results);
-    });
-});
+// Importar as rotas de capivaras
+const capivaraRoutes = require('../routes/capivaraRoutes');
 
+// Usar as rotas no caminho /capivaras
+app.use('/capivaras', capivaraRoutes);
+
+// Iniciar o servidor na porta 5000
 app.listen(5000, () => {
     console.log('API rodando na porta 5000');
 });
