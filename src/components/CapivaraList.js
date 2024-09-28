@@ -16,12 +16,13 @@ const CapivaraList = ({ onEdit, refresh }) => {
     const handleDelete = async (id) => {
         try {
             await deleteCapivara(id);
-            setCapivaras(capivaras.filter((capivara) => capivara.id !== id));
+            setCapivaras(capivaras.filter((capivara) => capivara.id !== id));  // Atualizar a lista localmente
             setMessage('Capivara removida com sucesso!');
         } catch (error) {
             setMessage('Erro ao remover capivara.');
+            console.error("Erro ao remover capivara:", error);
         }
-    };
+    };    
 
     return (
         <div>

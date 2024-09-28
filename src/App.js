@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
-import CapivaraList from './componentes/CapivaraList';
-import AddCapivara from './componentes/AddCapivara';
-import EditCapivara from './componentes/EditCapivara';
+import CapivaraList from './components/CapivaraList';
+import AddCapivara from './components/AddCapivara';
+import EditCapivara from './components/EditCapivara';
 
 const App = () => {
     const [selectedCapivara, setSelectedCapivara] = useState(null);
