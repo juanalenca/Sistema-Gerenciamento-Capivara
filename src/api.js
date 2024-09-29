@@ -6,26 +6,32 @@ export const fetchCapivaras = async () => {
 };
 
 export const addCapivara = async (capivara) => {
-    const response = await fetch('http://localhost:5000/capivaras', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(capivara),
-    });
+    try {
+        const response = await fetch('http://localhost:5000/capivaras', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'  // Cabeçalho JSON
+            },
+            body: JSON.stringify(capivara),  // Converte o objeto para JSON
+        });
 
-    // Verificando o status antes de tentar ler o corpo
-    console.log('Response status:', response.status);
+        const responseBody = await response.text(); // Obtém o corpo da resposta
 
-    // Só ler o body uma vez
-    const responseBody = await response.json();
-    console.log('Response body:', responseBody);
-
-    if (!response.ok) {
-        throw new Error('Erro na requisição ao servidor');
+        try {
+            const json = JSON.parse(responseBody);  // Tenta converter para JSON
+            if (!response.ok) {
+                throw new Error(json.error || 'Erro na requisição ao servidor');
+            }
+            return json;
+        } catch (error) {
+            console.error('Erro ao converter resposta para JSON:', responseBody);
+            throw new Error('Resposta do servidor inválida');
+        }
+    } catch (error) {
+        console.error('Erro no frontend ao adicionar capivara:', error);
+        throw error;
     }
-
-    return responseBody;  // Retornar o resultado da API
 };
-
 
 export const updateCapivara = async (id, capivara) => {
     const response = await fetch(`${API_URL}/${id}`, {

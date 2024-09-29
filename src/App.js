@@ -17,14 +17,16 @@ const App = () => {
     };
 
     return (
-        <div>
-            <h1>Gerenciamento de Capivaras</h1>
-            {selectedCapivara ? (
-                <EditCapivara capivara={selectedCapivara} onUpdate={handleUpdate} onCancel={() => setSelectedCapivara(null)} />
-            ) : (
-                <AddCapivara onAdd={handleUpdate} />
-            )}
-            <CapivaraList onEdit={handleEdit} refresh={refresh} />
+        <div className="bg-gray-100 min-h-screen">
+            <div className="container mx-auto p-4">
+                <h1 className="text-4xl font-bold text-center text-blue-600 mb-6">Gerenciamento de Capivaras</h1>
+                {selectedCapivara ? (
+                    <EditCapivara capivara={selectedCapivara} onUpdate={handleUpdate} onCancel={() => setSelectedCapivara(null)} />
+                ) : (
+                    <AddCapivara onAdd={handleUpdate} />
+                )}
+                <CapivaraList onEdit={handleEdit} refresh={refresh} />
+            </div>
         </div>
     );
 };

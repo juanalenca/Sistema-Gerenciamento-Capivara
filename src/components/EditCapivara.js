@@ -17,10 +17,11 @@ const EditCapivara = ({ capivara, onUpdate, onCancel }) => {
 
     useEffect(() => {
         if (capivara) {
-            setNome(capivara.nome || '');  // Se o valor for null/undefined, defina como string vazia
-            setIdade(capivara.idade || '');  // Garantir que todos os valores sejam strings ou números válidos
+            console.log("Dados da capivara recebidos para edição:", capivara);
+            setNome(capivara.nome || '');
+            setIdade(capivara.idade || '');
             setPeso(capivara.peso || '');
-            setStatusDeSaude(capivara.status_de_saude || '');
+            setStatusDeSaude(capivara.status_de_saude || '');  // Alterado para status_de_saude
             setHabitat(capivara.habitat || '');
             setComportamento(capivara.comportamento || '');
             setDieta(capivara.dieta || '');
@@ -38,31 +39,44 @@ const EditCapivara = ({ capivara, onUpdate, onCancel }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log("Enviando capivara para atualização:", {
+            nome,
+            idade,
+            peso,
+            status_de_saude: statusDeSaude,  // Certifique-se de enviar statusDeSaude como status_de_saude
+            habitat,
+            comportamento,
+            dieta,
+            observacoes
+        });
+
         const newErrors = validateForm();
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
         setLoading(true);
+
         try {
-            await updateCapivara(capivara.id, { 
-                nome, 
-                idade, 
-                peso, 
-                status_de_saude: statusDeSaude, 
-                habitat, 
-                comportamento, 
-                dieta, 
-                observacoes 
+            await updateCapivara(capivara.id, {
+                nome,
+                idade,
+                peso,
+                status_de_saude: statusDeSaude, // Certifique-se de enviar statusDeSaude como status_de_saude
+                habitat,
+                comportamento,
+                dieta,
+                observacoes
             });
             setMessage('Capivara atualizada com sucesso!');
-            onUpdate();  // Atualiza a lista de capivaras no componente pai
+            onUpdate();
         } catch (error) {
             setMessage('Erro ao atualizar capivara.');
             console.error("Erro ao atualizar capivara:", error);
         }
         setLoading(false);
-    };    
+    };
 
     return (
         <form onSubmit={handleSubmit}>
