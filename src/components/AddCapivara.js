@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { addCapivara } from '../api';
-import { TailSpin } from 'react-loader-spinner'; // Pacote de loading spinner
+import { TailSpin } from 'react-loader-spinner';
+import Modal from './Modal';  // Importando o componente Modal
 
 const AddCapivara = ({ onAdd }) => {
     const [nome, setNome] = useState('');
-    const [idade, setIdade] = useState('');
+    const [idade, setIdade] = useState(''); 
     const [peso, setPeso] = useState('');
     const [statusDeSaude, setStatusDeSaude] = useState('');
     const [habitat, setHabitat] = useState('');
@@ -12,60 +13,55 @@ const AddCapivara = ({ onAdd }) => {
     const [dieta, setDieta] = useState('');
     const [observacoes, setObservacoes] = useState('');
     const [message, setMessage] = useState('');
-    const [loading, setLoading] = useState(false); // Estado de carregamento
+    const [loading, setLoading] = useState(false);
     const [errors, setErrors] = useState({});
+    const [showPreview, setShowPreview] = useState(false);
 
     const validateForm = () => {
         const newErrors = {};
         if (!nome) newErrors.nome = 'O nome é obrigatório.';
-        if (!idade || idade <= 0) newErrors.idade = 'A idade deve ser um número positivo.';
-        if (!peso || peso <= 0) newErrors.peso = 'O peso deve ser um número positivo.';
+        if (!idade || idade <= 0 || idade > 25) newErrors.idade = 'A idade deve ser entre 1 e 25 anos.';
+        if (!peso || peso < 0.1 || peso > 150) newErrors.peso = 'O peso deve ser entre 0.1kg e 150kg.';
         return newErrors;
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
-    
-        // Checagem de valores antes de enviar
-        console.log("Nome:", nome);
-        console.log("Idade:", idade);
-        console.log("Peso:", peso);
-        console.log("Status de Saúde:", statusDeSaude);
-    
         const newErrors = validateForm();
         if (Object.keys(newErrors).length > 0) {
             setErrors(newErrors);
             return;
         }
-    
-        setLoading(true); // Iniciar carregamento
-    
+        setShowPreview(true);  // Abre o modal de confirmação
+    };
+
+    const confirmSubmit = async () => {
+        setLoading(true);
+
         const newCapivara = {
             nome,
             idade,
             peso,
-            statusDeSaude,  // Verifique este valor
+            statusDeSaude: statusDeSaude || 'Saudável',  // Garantir que um valor padrão seja enviado
             habitat,
             comportamento,
             dieta,
             observacoes
         };
-    
-        console.log("Enviando capivara:", newCapivara); // <-- Log para verificar o que está sendo enviado
-    
+
         try {
             const result = await addCapivara(newCapivara);
             setMessage('Capivara adicionada com sucesso!');
             onAdd(result);
             resetForm();
-            setTimeout(() => setMessage(''), 3000); // Esconde a mensagem após 3 segundos
+            setTimeout(() => setMessage(''), 3000);
         } catch (error) {
-            setMessage('Erro ao adicionar capivara.');
-            console.error("Erro no frontend ao adicionar capivara:", error); // <-- Log do erro
+            setMessage('Erro ao adicionar a capivara. Tente novamente.');
+            console.error("Erro ao adicionar capivara:", error);
         }
-        setLoading(false); // Parar carregamento
+        setLoading(false);
+        setShowPreview(false);
     };
-    
 
     const resetForm = () => {
         setNome('');
@@ -80,58 +76,132 @@ const AddCapivara = ({ onAdd }) => {
     };
 
     return (
-        <form onSubmit={handleSubmit}>
+        <div>
+            <form onSubmit={handleSubmit} className="bg-black text-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <h2 className="text-2xl font-bold text-white mb-4">Adicionar Capivara</h2>
+                {message && <p className="text-green-500 mb-4">{message}</p>}
 
-            <h2 className="text-2xl font-bold text-gray-700 mb-4">Adicionar Capivara</h2>
-            {message && <p className="text-green-500">{message}</p>}
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Nome" value={nome} onChange={(e) => setNome(e.target.value)} required />
-                {errors.nome && <p className="text-red-500 text-sm">{errors.nome}</p>}
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Nome"
+                        value={nome}
+                        onChange={(e) => setNome(e.target.value)}
+                        maxLength={400}
+                        required
+                    />
+                    {errors.nome && <p className="text-red-500 text-sm">{errors.nome}</p>}
+                </div>
 
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="number" placeholder="Idade" value={idade} onChange={(e) => setIdade(e.target.value)} required />
-                {errors.idade && <p className="text-red-500 text-sm">{errors.idade}</p>}
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="number"
+                        placeholder="Idade (anos)"
+                        value={idade}
+                        onChange={(e) => setIdade(e.target.value)}
+                        required
+                    />
+                    {errors.idade && <p className="text-red-500 text-sm">{errors.idade}</p>}
+                </div>
 
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="number" placeholder="Peso" value={peso} onChange={(e) => setPeso(e.target.value)} required />
-                {errors.peso && <p className="text-red-500 text-sm">{errors.peso}</p>}
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="number"
+                        placeholder="Peso (kg)"
+                        value={peso}
+                        onChange={(e) => setPeso(e.target.value)}
+                        step="0.01"
+                        min="0.1"
+                        max="150"
+                        required
+                    />
+                    {errors.peso && <p className="text-red-500 text-sm">{errors.peso}</p>}
+                </div>
 
-            {errors.peso && <p style={{ color: 'red' }}>{errors.peso}</p>}
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Status de Saúde"
+                        value={statusDeSaude}
+                        onChange={(e) => setStatusDeSaude(e.target.value)}
+                        maxLength={400}
+                        required
+                    />
+                </div>
 
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Status de Saúde" value={statusDeSaude} onChange={(e) => setStatusDeSaude(e.target.value)} required />
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Habitat"
+                        value={habitat}
+                        onChange={(e) => setHabitat(e.target.value)}
+                        maxLength={400}
+                        required
+                    />
+                </div>
 
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Habitat" value={habitat} onChange={(e) => setHabitat(e.target.value)} required />
-            </div>
-            
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Comportamento" value={comportamento} onChange={(e) => setComportamento(e.target.value)} required />
-            </div>
-            
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Dieta" value={dieta} onChange={(e) => setDieta(e.target.value)} required />
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Comportamento"
+                        value={comportamento}
+                        onChange={(e) => setComportamento(e.target.value)}
+                        maxLength={400}
+                        required
+                    />
+                </div>
 
-            <div className="mb-4">
-                <input className="border rounded w-full py-2 px-3 text-gray-700" type="text" placeholder="Observações" value={observacoes} onChange={(e) => setObservacoes(e.target.value)} />
-            </div>
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Dieta (Opcional)"
+                        value={dieta}
+                        onChange={(e) => setDieta(e.target.value)}
+                        maxLength={400}
+                    />
+                </div>
 
-            <button
-                type="submit"
-                disabled={loading}
-                className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-            >
-                {loading ? 'Adicionando...' : 'Adicionar'}
-            </button>
-            
-            {loading && <TailSpin height="50" width="50" color="blue" ariaLabel="loading" />}
+                <div className="mb-4">
+                    <input
+                        className="border rounded w-full py-2 px-3 bg-gray-700 text-white"
+                        type="text"
+                        placeholder="Observações (Opcional)"
+                        value={observacoes}
+                        onChange={(e) => setObservacoes(e.target.value)}
+                        maxLength={400}
+                    />
+                </div>
 
-        </form>
+                <button
+                    type="submit"
+                    disabled={loading}
+                    className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                    {loading ? 'Adicionando...' : 'Adicionar'}
+                </button>
+
+                {loading && <TailSpin height="50" width="50" color="white" ariaLabel="loading" />}
+            </form>
+
+            <Modal isOpen={showPreview} onClose={() => setShowPreview(false)} onConfirm={confirmSubmit}>
+                <h3 className="text-xl font-bold mb-4 text-white">Confirme os dados da Capivara</h3>
+                <p className="text-white"><strong>Nome:</strong> {nome}</p>
+                <p className="text-white"><strong>Idade (anos):</strong> {idade}</p>
+                <p className="text-white"><strong>Peso (kg):</strong> {peso}</p>
+                <p className="text-white"><strong>Status de Saúde:</strong> {statusDeSaude}</p>
+                <p className="text-white"><strong>Habitat:</strong> {habitat}</p>
+                <p className="text-white"><strong>Comportamento:</strong> {comportamento}</p>
+                <p className="text-white"><strong>Dieta:</strong> {dieta || 'Não especificada'}</p>
+                <p className="text-white"><strong>Observações:</strong> {observacoes}</p>
+            </Modal>
+        </div>
     );
 };
 
