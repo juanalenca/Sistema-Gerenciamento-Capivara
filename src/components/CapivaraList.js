@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { fetchCapivaras, deleteCapivara } from "../api";
+import { FaEdit, FaTrashAlt } from 'react-icons/fa'; // Ícones para botões
+import { CSSTransition, TransitionGroup } from 'react-transition-group'; // Animações de transição
 
 const CapivaraList = ({ onEdit, refresh }) => {
   const [capivaras, setCapivaras] = useState([]);
-  const [message, setMessage] = useState(""); // Para mostrar mensagens
+  const [message, setMessage] = useState("");
 
   useEffect(() => {
     const loadCapivaras = async () => {
@@ -16,7 +18,9 @@ const CapivaraList = ({ onEdit, refresh }) => {
   const handleDelete = async (id) => {
     try {
       await deleteCapivara(id);
-      setCapivaras(capivaras.filter((capivara) => capivara.id !== id)); // Atualizar a lista localmente
+      setCapivaras((prevCapivaras) =>
+        prevCapivaras.filter((capivara) => capivara.id !== id)
+      );
       setMessage("Capivara removida com sucesso!");
       setTimeout(() => setMessage(""), 3000);
     } catch (error) {
@@ -27,36 +31,36 @@ const CapivaraList = ({ onEdit, refresh }) => {
 
   return (
     <div className="mt-8">
-      <h2 className="text-2xl font-bold mb-4">Lista de Capivaras</h2>
+      <h2 className="text-2xl font-bold text-white mb-4">Lista de Capivaras</h2>
       {message && <p className="text-green-500 mb-4">{message}</p>}
-      <ul className="space-y-4">
+      <TransitionGroup component="ul" className="space-y-4">
         {capivaras.map((capivara) => (
-          <li
-            key={capivara.id}
-            className="flex justify-between items-center bg-gray-100 rounded p-4 shadow-md"
-          >
-            <div>
-              <span className="font-bold">{capivara.nome}</span> -{" "}
-              {capivara.idade} anos
-            </div>
-            <div>
-              <button
-                onClick={() => onEdit(capivara)}
-                className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded mr-2 transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Editar
-              </button>
+          <CSSTransition key={capivara.id} timeout={500} classNames="fade">
+            <li
+              className="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-gray-800 border border-gray-600 rounded p-6 shadow-md space-y-2 sm:space-y-0 sm:space-x-4"
+            >
+              <div className="text-white">
+                <span className="font-bold text-white">{capivara.nome}</span> - {capivara.idade} anos
+              </div>
+              <div className="mt-2 sm:mt-0 flex space-x-4">
+                <button
+                  onClick={() => onEdit(capivara)}
+                  className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <FaEdit className="mr-2" /> Editar
+                </button>
 
-              <button
-                onClick={() => handleDelete(capivara.id)}
-                className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105"
-              >
-                Remover
-              </button>
-            </div>
-          </li>
+                <button
+                  onClick={() => handleDelete(capivara.id)}
+                  className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center transition duration-300 ease-in-out transform hover:scale-105"
+                >
+                  <FaTrashAlt className="mr-2" /> Remover
+                </button>
+              </div>
+            </li>
+          </CSSTransition>
         ))}
-      </ul>
+      </TransitionGroup>
     </div>
   );
 };
