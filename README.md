@@ -1,18 +1,19 @@
 # Sistema de Gerenciamento de Capivaras 🦫
 
 Este projeto é uma aplicação web para gerenciar capivaras, permitindo que você adicione, edite, liste e remova informações sobre essas adoráveis criaturas. O projeto é dividido em duas partes principais: a **API (backend)**, que lida com as operações no banco de dados, e o **Frontend (capivara-app)**, que é a interface do usuário.
+<br><br><br>
+
+## 🌟 Funcionalidades Principais
+
+- **Adicionar** uma capivara com nome, idade, peso, status de saúde, habitat, comportamento, dieta e observações.
+- **Editar** os detalhes de uma capivara existente.
+- **Listar** todas as capivaras registradas.
+- **Remover** capivaras da lista.
+- **Confirmações** para ações importantes.
+<br><br><br>
 
 
-## Funcionalidades Principais
-
-- Adicionar uma capivara com nome, idade, peso, status de saúde, habitat, comportamento, dieta e observações.
-- Editar os detalhes de uma capivara existente.
-- Listar todas as capivaras registradas.
-- Remover capivaras da lista.
-- Confirmações para ações importantes, como adição e exclusão.
-
-
-## Estrutura do Projeto
+## 🏗️ Estrutura do Projeto
 
 ```bash
 Sistema-Gerenciamento-Capivara/
@@ -28,17 +29,19 @@ Sistema-Gerenciamento-Capivara/
     ├── src/                 # Código-fonte do frontend
     └── package.json         # Dependências do frontend
 ```
+<br><br>
 
-
-## Requisitos
+## 📋 Requisitos
 Antes de começar, certifique-se de ter instalado em sua máquina:
 
-- Node.js (v14 ou superior)
-- Docker
-- Docker Compose
+- **Node.js** (v14 ou superior)
+- **Docker**
+- **Docker Compose**
+<br><br><br>
 
 
-## Passo a Passo de Instalação e Execução
+## 🚀 Passo a Passo de Instalação e Execução
+
 ### 1. Clone o repositório
 Clone o projeto para a sua máquina local usando o Git:
 ```bash
@@ -47,9 +50,10 @@ git clone https://github.com/usuario/sistema-gerenciamento-capivara.git
 ```bash
 cd Sistema-Gerenciamento-Capivara
 ```
+<br>
 
 ### 2. Configuração do Backend (API)
-#### a) Configurar as variáveis de ambiente
+#### a) **Configurar as variáveis de ambiente**
 Dentro do diretório **api/**, crie um arquivo **.env** com as seguintes variáveis de ambiente:
 ```bash
 DB_HOST=mysql
@@ -64,9 +68,7 @@ No diretório **api/**, execute o seguinte comando para levantar a API e o banco
 ```bash
 docker-compose up --build
 ```
-Isso fará o build das imagens Docker e iniciará dois serviços:
-- API: rodando na porta **5000**
-- MySQL: rodando na porta **3307**, com o banco de dados **zoologico** já configurado.
+<br>
 
 ### 3. Configuração do Frontend (React)
 Você pode executar o frontend de duas maneiras: usando Docker ou Node.js diretamente.
@@ -90,13 +92,13 @@ npm install
 ```bash
 npm start
 ```
-O frontend estará disponível em **http://localhost:3000**.
-
+<br>
 
 ### 4. Acessar a aplicação
 - Abra o navegador e acesse o frontend: http://localhost:3000.
 - A API estará rodando no endpoint: http://localhost:5000.
-Você poderá adicionar, editar e remover capivaras pela interface da aplicação.
+Você poderá adicionar, editar e remover capivaras pela interface da aplicação.<br>
+<br>
 
 ### 5. Testar a Aplicação
 Após levantar a aplicação (frontend e backend), você poderá interagir com o sistema para gerenciar capivaras:
@@ -104,8 +106,9 @@ Após levantar a aplicação (frontend e backend), você poderá interagir com o
 - Adicionar Capivara: Preencha o formulário e clique em "Adicionar".
 - Editar Capivara: Clique no botão de "Editar" de uma capivara já existente e altere os dados.
 - Remover Capivara: Utilize o botão de "Remover" para deletar uma capivara do sistema.
+<br><br><br>
 
-## Tecnologias Utilizadas
+## 🌐 Tecnologias Utilizadas
 
 ### Backend:
 - Node.js
@@ -120,6 +123,7 @@ Após levantar a aplicação (frontend e backend), você poderá interagir com o
 - React-Icons (para ícones)
 - React-Loader-Spinner (para animações de carregamento)
 - React-Transition-Group (para animações)
+<br><br><br>
 
-### Contribuição
+## 🤝 Contribuição
 Sinta-se à vontade para abrir issues ou pull requests no repositório! Qualquer feedback ou sugestão é bem-vindo.
